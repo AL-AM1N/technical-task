@@ -1,0 +1,45 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@layer base {
+  :root {
+    --font-manrope: 'Manrope', sans-serif;
+    --font-cormorant: 'Cormorant Garamond', serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    @apply font-sans overflow-x-hidden bg-[#f0f0f0] text-black;
+    font-family: var(--font-manrope);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tighter;
+  }
+
+  .font-cormorant {
+    font-family: var(--font-cormorant);
+  }
+}
+
+@layer utilities {
+  .animate-spin-slow {
+    animation: spin 15s linear infinite;
+  }
+}
+
+  /* Ticker animation */
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .ticker-animate {
+    animation: ticker 50s linear infinite;
+    display: flex;
+    width: max-content;
+  }
