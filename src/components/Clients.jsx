@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import logo from "../assets/logoipsum-414.png";
 
 export default function Clients() {
@@ -12,17 +13,45 @@ export default function Clients() {
     { name: "NEXT CAN BE YOU.", logo: "NEXT" }
   ]
 
+  const containerVariants = {
+    initial: {},
+    whileInView: {
+      transition: {
+        staggerChildren: 0.05
+      }
+    }
+  }
+
+  const itemVariants = {
+    initial: { opacity: 0, scale: 0.9 },
+    whileInView: { opacity: 1, scale: 1 },
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] }
+  }
+
   return (
     <section className=" border-y border-gray-100 max-w-7xl mx-auto mt-6 pb-2" id="clients">
-        <div className="py-6 flex justify-between">
-            <p>Happy Users</p>
-            <p>©2025 Case-Themes™ Studio</p>
-        </div>
-      <div className="bg-white rounded-2xl grid grid-cols-2 md:grid-cols-4">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        className="py-6 flex justify-between"
+      >
+        <p>Happy Users</p>
+        <p>©2025 Case-Themes™ Studio</p>
+      </motion.div>
+      <motion.div 
+        variants={containerVariants}
+        initial="initial"
+        whileInView="whileInView"
+        viewport={{ once: true }}
+        className="bg-white rounded-2xl grid grid-cols-2 md:grid-cols-4"
+      >
         {clients.map((client, index) => (
-          <div 
+          <motion.div 
             key={index} 
-            className={`border-r border-b border-gray-100 p-12 flex flex-col items-center justify-center gap-6 group hover:bg-[#f5f5f5] transition-colors duration-300 ${index === clients.length - 1 ? 'border-r-0' : ''}`}
+            variants={itemVariants}
+            whileHover={{ backgroundColor: "#f5f5f5" }}
+            className={`border-r border-b border-gray-100 p-12 flex flex-col items-center justify-center gap-6 group transition-colors duration-300 ${index % 4 === 3 ? 'md:border-r-0' : ''}`}
           >
             {client.logo === "NEXT" ? (
               <div className="text-center space-y-4">
@@ -31,17 +60,18 @@ export default function Clients() {
               </div>
             ) : (
               <>
-                <img 
+                <motion.img 
+                  whileHover={{ scale: 1.1 }}
                   src= {logo}
                   alt={client.name} 
-                  className="w-32 h-10 object-contain group-hover:opacity-100 transition-opacity duration-300 group-hover:grayscale-0"
+                  className="w-32 h-10 object-contain group-hover:opacity-100 transition-opacity duration-300 transition-transform"
                 />
-                <span className="text-[10px] font-bold text-gray-400 tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300">{client.name}</span>
+                <span className="text-[10px] font-bold text-gray-400 tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">{client.name}</span>
               </>
             )}
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   )
 }

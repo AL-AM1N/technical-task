@@ -22,7 +22,7 @@ function App() {
 
   return (
     <>
-    <SmoothFollower></SmoothFollower>
+      <SmoothFollower></SmoothFollower>
       <Navbar></Navbar>
       <main>
         <Hero></Hero>
@@ -30,17 +30,17 @@ function App() {
         <Ticker></Ticker>
         <Portfolio></Portfolio>
         <Expertise></Expertise>
+        <Impact></Impact>
         <Clients></Clients>
         <Reel></Reel>
         <Testimonials></Testimonials>
         <Contact></Contact>
-        <Impact></Impact>
         <AwardsSection></AwardsSection>
         <Team></Team>
         <FAQSection></FAQSection>
         <BlogGrid></BlogGrid>
-        <Footer></Footer>
       </main>
+      <Footer></Footer>
     </>
   )
 }

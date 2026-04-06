@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const teams = {
   design: [
@@ -18,11 +19,33 @@ const teams = {
 export default function Team() {
   const [activeTab, setActiveTab] = useState('design')
 
+  const containerVariants = {
+    initial: {},
+    animate: {
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  }
+
+  const cardVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, scale: 0.95 },
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] }
+  }
+
   return (
     <section className="bg-white max-w-7xl mx-auto pl-12 pr-4 py-4 rounded-2xl" id="team">
       <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row gap-16">
         {/* Left Content */}
-        <div className="w-full flex-1 md:w-[400px] space-y-10 py-20 pl-8">
+        <motion.div 
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="w-full flex-1 md:w-[400px] space-y-10 py-20 pl-8"
+        >
           <span className="text-[10px] tracking-[0.3em] font-bold text-gray-400 uppercase">OUR AVENGERS</span>
           <h2 className="text-4xl md:text-5xl font-black leading-tight text-black">
             Meet with our team member
@@ -35,9 +58,15 @@ export default function Team() {
                 <button 
                   key={tab}
                   onClick={() => setActiveTab(tabId)}
-                  className={`pb-4 text-xs font-bold tracking-widest transition-all ${activeTab === tabId ? 'text-black border-b-2 border-black' : 'text-gray-400 border-b-2 border-transparent'}`}
+                  className={`relative pb-4 text-xs font-bold tracking-widest transition-all ${activeTab === tabId ? 'text-black' : 'text-gray-400'}`}
                 >
                   {tab}
+                  {activeTab === tabId && (
+                    <motion.div 
+                      layoutId="activeTab"
+                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-black"
+                    />
+                  )}
                 </button>
               )
             })}
@@ -53,40 +82,58 @@ export default function Team() {
           </a>
 
           <div className="pt-10">
-            <img 
+            <motion.img 
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.5 }}
               src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&q=80" 
               alt="Team" 
-              className="rounded-3xl shadow-xl hover:scale-105 transition-transform duration-500"
+              className="rounded-3xl shadow-xl transition-transform duration-500"
             />
           </div>
-        </div>
+        </motion.div>
 
         {/* Right Grid */}
-        <div className="flex-1 pt-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {teams[activeTab].map((member, index) => (
-              <div key={index} className="bg-[#f0f0f0] rounded-2xl p-2 space-y-6 group hover:translate-y-[-10px] transition-all duration-300">
-                <div className="rounded-2xl overflow-hidden aspect-square">
-                  <img 
-                    src={member.img} 
-                    alt={member.name} 
-                    className="w-full h-full object-cover group-hover:grayscale-0 transition-all duration-500"
-                  />
-                </div>
-                <div className='pl-6'>
-                  <h3 className="text-xl font-bold text-black mb-1">{member.name}</h3>
-                  <span className="text-xs font-bold text-gray-400 tracking-[0.2em]">{member.role}</span>
-                </div>
-                <div className="flex gap-2 border-t border-gray-100">
-                  {['f', '𝕏', 'in'].map(social => (
-                    <a key={social} href="#" className="w-8 h-8 rounded-full border border-gray-100 flex items-center justify-center text-xs font-bold text-gray-400 hover:bg-black hover:text-white hover:border-black transition-all">
-                      {social}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="flex-1 pt-8 overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.div 
+              key={activeTab}
+              variants={containerVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="grid grid-cols-1 md:grid-cols-2 gap-8"
+            >
+              {teams[activeTab].map((member, index) => (
+                <motion.div 
+                  key={`${activeTab}-${index}`}
+                  variants={cardVariants}
+                  whileHover={{ y: -10 }}
+                  className="bg-[#f0f0f0] rounded-2xl p-2 space-y-6 group transition-all duration-300"
+                >
+                  <div className="rounded-2xl overflow-hidden aspect-square">
+                    <motion.img 
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.6 }}
+                      src={member.img} 
+                      alt={member.name} 
+                      className="w-full h-full object-cover group-hover:grayscale-0 transition-all duration-500"
+                    />
+                  </div>
+                  <div className='pl-6'>
+                    <h3 className="text-xl font-bold text-black mb-1">{member.name}</h3>
+                    <span className="text-xs font-bold text-gray-400 tracking-[0.2em]">{member.role}</span>
+                  </div>
+                  <div className="flex gap-2 border-t border-gray-100">
+                    {['f', '𝕏', 'in'].map(social => (
+                      <a key={social} href="#" className="w-8 h-8 rounded-full border border-gray-100 flex items-center justify-center text-xs font-bold text-gray-400 hover:bg-black hover:text-white hover:border-black transition-all">
+                        {social}
+                      </a>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
     </section>

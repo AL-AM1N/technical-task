@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import ceoImg from "../assets/ceo.png";
 
 function Counter({ target }) {
@@ -33,25 +34,8 @@ function Counter({ target }) {
 }
 
 function ProgressBar({ label, pct, dark }) {
-  const barRef = useRef(null);
-  const [animated, setAnimated] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setAnimated(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.5 },
-    );
-    if (barRef.current) observer.observe(barRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <div className="mb-3" ref={barRef}>
+    <div className="mb-3">
       <div className="flex justify-between text-xs font-semibold text-gray-600 mb-1.5">
         <span>{label}</span>
         <span>{pct}%</span>
@@ -59,9 +43,12 @@ function ProgressBar({ label, pct, dark }) {
       <div
         className={`h-8 rounded-lg overflow-hidden ${dark ? "bg-gray-800" : "bg-gray-100"}`}
       >
-        <div
-          className={`h-full rounded-lg transition-all duration-1000 ease-out ${dark ? "bg-white" : "bg-gray-200"}`}
-          style={{ width: animated ? `${pct}%` : "0%" }}
+        <motion.div
+          initial={{ width: 0 }}
+          whileInView={{ width: `${pct}%` }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+          className={`h-full rounded-lg ${dark ? "bg-white" : "bg-gray-200"}`}
         />
       </div>
     </div>
@@ -70,7 +57,13 @@ function ProgressBar({ label, pct, dark }) {
 
 function AwardBadge({ title, sub, note, extra }) {
   return (
-    <div className="text-center border border-white/20 rounded-2xl px-8 py-6 w-44">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6 }}
+      className="text-center border border-white/20 rounded-2xl px-6 py-6 w-full max-w-[180px] md:w-44"
+    >
       <p className="text-white font-black text-sm tracking-widest">{title}</p>
       <p className="text-white font-black text-xl md:text-2xl tracking-widest mt-0.5">
         {sub}
@@ -80,18 +73,28 @@ function AwardBadge({ title, sub, note, extra }) {
       {extra && (
         <p className="text-gray-400 text-[10px] tracking-widest">{extra}</p>
       )}
-    </div>
+    </motion.div>
   );
 }
 
 export default function About() {
+  const cardVariants = {
+    initial: { opacity: 0, y: 30 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true },
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+  };
+
   return (
     <section className="bg-[#f0f0f0] px-4 pb-16" id="about">
       <div className="max-w-screen-xl mx-auto">
         <div className="flex flex-col lg:flex-row gap-2 lg:gap-2 items-stretch">
-          
+
           {/* Left */}
-          <div className="w-full lg:w-1/4 flex flex-col gap-5">
+          <motion.div
+            {...cardVariants}
+            className="w-full lg:w-1/4 flex flex-col gap-5"
+          >
             <div className="bg-white rounded-3xl p-8 flex flex-col flex-1 gap-6">
               <div>
                 <div className="text-7xl font-black text-black leading-none">
@@ -111,14 +114,21 @@ export default function About() {
 
               <div className="mt-auto">
                 <div className="flex -space-x-2 mb-3">
-                  {["bg-gray-400","bg-gray-500","bg-gray-600","bg-gray-300"].map((c, i) => (
-                    <div key={i} className={`w-9 h-9 rounded-full border-2 border-white ${c} overflow-hidden`}>
+                  {["bg-gray-400", "bg-gray-500", "bg-gray-600", "bg-gray-300"].map((c, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: i * 0.1 }}
+                      viewport={{ once: true }}
+                      className={`w-9 h-9 rounded-full border-2 border-white ${c} overflow-hidden`}
+                    >
                       <img
                         src={`https://i.pravatar.cc/40?img=${i + 10}`}
                         alt="user"
                         className="w-full h-full object-cover"
                       />
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
                 <p className="text-sm font-semibold text-black">
@@ -126,42 +136,59 @@ export default function About() {
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Middle */}
-          <div className="w-full lg:w-1/2 order-last lg:order-none flex flex-col">
-            
-            {/* 🔥 ONLY CHANGE HERE */}
+          <motion.div
+            {...cardVariants}
+            transition={{ ...cardVariants.transition, delay: 0.2 }}
+            className="w-full lg:w-1/2 order-last lg:order-none flex flex-col"
+          >
             <section className="bg-black mx-0 lg:mx-3 rounded-3xl overflow-visible flex-1 flex flex-col">
-              
               <div className="flex flex-col md:flex-row flex-1 min-h-[420px] items-stretch">
-                
+
                 {/* CEO Image */}
                 <div className="flex-1 relative flex flex-col justify-end p-8">
-                  <img
+                  <motion.img
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1, delay: 0.4 }}
                     src={ceoImg}
                     alt="CEO"
-                    className="absolute -top-16 inset-x-0 w-full h-auto object-cover object-top "
+                    className="absolute -top-12 md:-top-16 inset-x-0 w-full h-[200px] md:h-auto object-cover object-top"
                   />
 
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 
                   <div className="relative z-10">
-                    <blockquote className="text-white text-lg md:text-xl font-medium leading-relaxed mb-4">
+                    <motion.blockquote
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8, delay: 0.6 }}
+                      className="text-white text-lg md:text-xl font-medium leading-relaxed mb-4"
+                    >
                       " At Floka, we merge strategy, creativity, and technology
                       to shape brands that people love. "
-                    </blockquote>
-                    <cite className="text-gray-400 text-sm not-italic">
+                    </motion.blockquote>
+                    <motion.cite
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8, delay: 0.8 }}
+                      className="text-gray-400 text-sm not-italic"
+                    >
                       Merizo H. Yelso <span className="text-gray-600">/ CEO</span>
-                    </cite>
+                    </motion.cite>
                   </div>
                 </div>
 
                 {/* Awards */}
-                <div className="flex flex-col items-center justify-center gap-8 px-12 py-10 border-l border-white/10">
+                <div className="flex flex-row md:flex-col items-center justify-center gap-4 md:gap-8 px-6 py-10 md:px-12 border-t md:border-t-0 md:border-l border-white/10">
                   <AwardBadge
                     title="ULTRA"
-                    sub="PRESTIGIOUS"
+                    sub="PRESTI"
                     note="BEST OF THE WORLD"
                     extra="WINNER"
                   />
@@ -169,29 +196,41 @@ export default function About() {
                 </div>
               </div>
             </section>
-          </div>
+          </motion.div>
 
           {/* Right */}
           <div className="w-full lg:w-1/4 flex flex-col gap-2 flex-1">
             <div className="flex flex-col gap-2 flex-1">
 
-              <div className="bg-white p-6 flex-1 flex flex-col gap-2 rounded-3xl">
+              <motion.div
+                {...cardVariants}
+                transition={{ ...cardVariants.transition, delay: 0.3 }}
+                className="bg-white p-6 flex-1 flex flex-col gap-2 rounded-3xl"
+              >
                 <p className="text-xs text-gray-400 font-semibold tracking-widest mb-1">
                   Follow us
                 </p>
                 <p className="text-lg font-bold text-black mb-3">
                   For check updates
                 </p>
-                <div className="flex flex-wrap gap-2 mt-auto">
-                  {["DRIBBBLE","BEHANCE","LINKEDIN","X","XING"].map((tag) => (
-                    <span key={tag} className="border border-gray-200 rounded-full px-4 py-1.5 text-xs font-semibold text-gray-600 hover:bg-black hover:text-white hover:border-black transition-all cursor-pointer">
+                <div className="flex flex-wrap gap-1.5 md:gap-2 mt-auto">
+                  {["DRIBBBLE", "BEHANCE", "LINKEDIN", "X", "XING"].map((tag, i) => (
+                    <motion.span
+                      key={tag}
+                      whileHover={{ scale: 1.05, backgroundColor: "#000", color: "#fff" }}
+                      className="border border-gray-200 rounded-full px-3 py-1 md:px-4 md:py-1.5 text-[10px] md:text-xs font-semibold text-gray-600 transition-colors cursor-pointer whitespace-nowrap"
+                    >
                       {tag}
-                    </span>
+                    </motion.span>
                   ))}
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="bg-white p-6 flex-1 flex flex-col gap-2 rounded-3xl">
+              <motion.div
+                {...cardVariants}
+                transition={{ ...cardVariants.transition, delay: 0.4 }}
+                className="bg-white p-6 flex-1 flex flex-col gap-2 rounded-3xl"
+              >
                 <p className="text-xs text-gray-400 font-semibold tracking-widest mb-2">
                   Impressions
                 </p>
@@ -200,7 +239,7 @@ export default function About() {
                   <ProgressBar label="UI/UX" pct={90} dark={true} />
                   <ProgressBar label="Explore" pct={72} dark={false} />
                 </div>
-              </div>
+              </motion.div>
 
             </div>
           </div>

@@ -12,7 +12,7 @@ export default function SmoothFollower() {
   const [isHovering, setIsHovering] = useState(false);
 
   const DOT_SMOOTHNESS = 0.2;
-  const BORDER_DOT_SMOOTHNESS = 0.1;
+  const BORDER_DOT_SMOOTHNESS = 0.2;
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -64,19 +64,18 @@ export default function SmoothFollower() {
   if (typeof window === 'undefined') return null;
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-50">
+    <div className="pointer-events-none fixed inset-0 z-[99999] mix-blend-difference">
       {/* Small dot */}
       <div
         style={{
           width: '8px',
           height: '8px',
           borderRadius: '50%',
-          backgroundColor: isHovering ? '#ffffff' : '#000000',
+          backgroundColor: '#ffffff',
           transform: 'translate(-50%, -50%)',
           position: 'absolute',
           left: `${renderPos.dot.x}px`,
           top: `${renderPos.dot.y}px`,
-          transition: 'background-color 0.2s ease',
           zIndex: 9999,
         }}
       />
@@ -87,12 +86,13 @@ export default function SmoothFollower() {
           width: isHovering ? '44px' : '28px',
           height: isHovering ? '44px' : '28px',
           borderRadius: '50%',
-          border: `2px solid ${isHovering ? '#ffffff' : '#000000'}`,
+          border: '2px solid #ffffff',
+          backgroundColor: isHovering ? '#ffffff' : 'transparent',
           transform: 'translate(-50%, -50%)',
           position: 'absolute',
           left: `${renderPos.border.x}px`,
           top: `${renderPos.border.y}px`,
-          transition: 'width 0.3s, height 0.3s, border-color 0.2s ease',
+          transition: 'width 0.3s, height 0.3s, background-color 0.3s ease',
           zIndex: 9998,
         }}
       />

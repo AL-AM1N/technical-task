@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import img1 from "./../assets/ceo_woman_portrait.png";
 import img2 from "./../assets/ceo_woman_portrait.png";
 import img3 from "./../assets/ceo_woman_portrait.png";
@@ -28,38 +29,75 @@ const posts = [
 ];
 
 const BlogGrid = () => {
+  const containerVariants = {
+    initial: {},
+    whileInView: {
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    initial: { opacity: 0, y: 30 },
+    whileInView: { opacity: 1, y: 0 },
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-10 " id="blog">
       {/* Header */}
-      <div className="text-center mb-10">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="text-center mb-10"
+      >
         <span className="text-xs tracking-[0.2em] font-bold text-gray-400 uppercase block">
           INSIGHTS
         </span>
         <h2 className="text-5xl font-semibold mt-2">Company blog & updates</h2>
-      </div>
+      </motion.div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <motion.div 
+        variants={containerVariants}
+        initial="initial"
+        whileInView="whileInView"
+        viewport={{ once: true }}
+        className="grid grid-cols-1 md:grid-cols-3 gap-6"
+      >
         {posts.map((post, index) => (
-          <div
+          <motion.div
             key={index}
-            className="group rounded-3xl overflow-hidden shadow-lg cursor-pointer"
+            variants={itemVariants}
+            whileHover={{ y: -10 }}
+            className={`group rounded-3xl overflow-hidden cursor-pointer ${
+              index > 0 ? "hidden md:block" : "block"
+            }`}
           >
             {post.layout === "image-top" ? (
               <>
                 {/* Image */}
-                <div className="relative h-64 md:h-80 lg:h-96">
-                  <img
+                <div className="relative h-64 md:h-80 lg:h-96 overflow-hidden rounded-3xl">
+                  <motion.img
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.6 }}
                     src={post.src}
                     alt={post.title}
-                    className="w-full h-full object-cover rounded-3xl"
+                    className="w-full h-full object-cover"
                   />
                   {/* Hover + icon at bottom-left */}
-                  <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <div className="bg-white w-10 h-10 rounded-full flex items-center justify-center text-black text-xl">
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    whileHover={{ opacity: 1, scale: 1 }}
+                    className="absolute bottom-4 left-4"
+                  >
+                    <div className="bg-white w-10 h-10 rounded-full flex items-center justify-center text-black text-xl font-bold shadow-lg">
                       +
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
 
                 {/* Text box separated */}
@@ -67,7 +105,7 @@ const BlogGrid = () => {
                   <div className="text-xs uppercase tracking-wide opacity-70">
                     {post.category} &nbsp; {post.date}
                   </div>
-                  <h3 className="mt-2 text-sm md:text-base">{post.title}</h3>
+                  <h3 className="mt-2 text-sm md:text-base font-medium">{post.title}</h3>
                 </div>
               </>
             ) : (
@@ -77,28 +115,34 @@ const BlogGrid = () => {
                   <div className="text-xs uppercase tracking-wide opacity-70">
                     {post.category} &nbsp; {post.date}
                   </div>
-                  <h3 className="mt-2 text-sm md:text-base">{post.title}</h3>
+                  <h3 className="mt-2 text-sm md:text-base font-medium">{post.title}</h3>
                 </div>
 
                 {/* Image */}
-                <div className="relative h-64 md:h-80 lg:h-96">
-                  <img
+                <div className="relative h-64 md:h-80 lg:h-96 overflow-hidden rounded-3xl">
+                  <motion.img
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.6 }}
                     src={post.src}
                     alt={post.title}
-                    className="w-full h-full object-cover rounded-3xl"
+                    className="w-full h-full object-cover"
                   />
                   {/* Hover + icon at bottom-left */}
-                  <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <div className="bg-white w-10 h-10 rounded-full flex items-center justify-center text-black text-xl">
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    whileHover={{ opacity: 1, scale: 1 }}
+                    className="absolute bottom-4 left-4"
+                  >
+                    <div className="bg-white w-10 h-10 rounded-full flex items-center justify-center text-black text-xl font-bold shadow-lg">
                       +
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
               </>
             )}
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 
 const projects = [
   {
@@ -33,49 +33,58 @@ const projects = [
   },
 ];
 
-function PortfolioCard({ project, delay }) {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => entry.target.classList.add("visible"), delay || 0);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.15 },
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [delay]);
+function PortfolioCard({ project }) {
+  const cardVariants = {
+    initial: { opacity: 0, y: 30 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true },
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+  };
 
   return (
-    <div
-      ref={ref}
-      className={`reveal group cursor-pointer ${project.tall ? "row-span-2" : ""} ${project.wide ? "col-span-2" : ""}`}
+    <motion.div
+      {...cardVariants}
+      className={`group cursor-pointer ${project.tall ? "md:row-span-2" : ""} ${project.wide ? "md:col-span-2" : ""}`}
     >
       <div
-        className={`relative rounded-2xl overflow-hidden bg-gray-100 ${project.tall ? "h-full min-h-[480px]" : "h-[280px]"}`}
+        className={`relative rounded-2xl overflow-hidden bg-gray-100 ${project.tall ? "h-[350px] md:h-full md:min-h-[480px]" : "h-[250px] md:h-[280px]"}`}
       >
-        <img
+        <motion.img
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           src={project.img}
           alt={project.title}
-          className="w-full h-full object-cover img-zoom"
+          className="w-full h-full object-cover"
         />
+        
         {/* Overlay on hover */}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300" />
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileHover={{ opacity: 0.3 }}
+          className="absolute inset-0 bg-black pointer-events-none" 
+        />
+        
         {/* Tag on hover */}
-        <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-300">
+        <motion.div 
+          initial={{ opacity: 0, x: -10 }}
+          whileHover={{ opacity: 1, x: 0 }}
+          className="absolute top-4 left-4"
+        >
           <span className="bg-white text-black text-xs font-bold px-3 py-1.5 rounded-full">
             {project.tag}
           </span>
-        </div>
+        </motion.div>
+        
         {/* Arrow on hover */}
-        <div className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8, y: 10 }}
+          whileHover={{ opacity: 1, scale: 1, y: 0 }}
+          className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center"
+        >
           <span className="text-black font-bold">↗</span>
-        </div>
+        </motion.div>
       </div>
+
       {/* Meta */}
       <div className="flex items-center justify-between mt-3 px-1">
         <span className="text-sm font-bold tracking-wider text-gray-900">
@@ -97,44 +106,63 @@ function PortfolioCard({ project, delay }) {
           {project.year}
         </span>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 export default function Portfolio() {
+  const containerVariants = {
+    initial: {},
+    whileInView: {
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  }
+
   return (
     <section className=" px-4 py-16" id="portfolio">
       <div className="max-w-screen-xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4"
+        >
           <div className="w-full">
             <span className="text-xs tracking-[0.2em] font-bold text-gray-400 uppercase mb-4 block">
               Portfolio
             </span>
             <div className="divider divider-start w-full"></div>
           </div>
-        </div>
-        <div className="w-full place-items-center">
-          <p className=" text-4xl text-left md:text-5xl font-black text-black p-6">
-            Strategy to build powerful digital solutions.
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="w-full place-items-center"
+        >
+          <p className="text-4xl text-left md:text-5xl font-light text-black p-6">
+            Strategy to build powerful <br className="hidden md:block" /> digital solutions.
           </p>
-        </div>
+        </motion.div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 auto-rows-auto">
-            {/* Row 2: tall + short stacked */}
-          <PortfolioCard
-            project={{ ...projects[2], tall: false }}
-            delay={150}
-          />
-            <PortfolioCard project={projects[3]} delay={200} />
-          {/* Row 1: 2 equal */}
-          <PortfolioCard project={projects[0]} delay={0} />
-          <PortfolioCard project={projects[1]} delay={100} />
-          <PortfolioCard project={projects[3]} delay={200} />
-          
-          
-        </div>
+        <motion.div 
+          variants={containerVariants}
+          initial="initial"
+          whileInView="whileInView"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-5 auto-rows-auto"
+        >
+          <PortfolioCard project={{ ...projects[2], tall: false }} />
+          <PortfolioCard project={projects[3]} />
+          <PortfolioCard project={projects[0]} />
+          <PortfolioCard project={projects[1]} />
+          <PortfolioCard project={projects[3]} />
+        </motion.div>
       </div>
     </section>
   );
